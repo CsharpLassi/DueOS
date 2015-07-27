@@ -1,0 +1,7 @@
+kernel.bin
+kernel.list
+kernel.map
+
+/build/*
+/tools/PortDue/obj/*
+/tools/PortDue/bin/*
