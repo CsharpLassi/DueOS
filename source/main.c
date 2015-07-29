@@ -1,8 +1,17 @@
+#include "sam3x8e.h"
+#include "uart.h"
+#include "stdio.h"
+
+
 int main(void)
 {
-  while (1) {
-    /* code */
-  }
+	// Initialize the SAM system
+	SystemInit();
 
-  return 0;
+	configure_uart();
+
+	while (1)
+	{
+		printf("Hallo Welt\n");
+	}
 }

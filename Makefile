@@ -53,7 +53,7 @@ $(BUILD)output.elf : $(OBJECTS)
 # Rule to make the object files.
 $(BUILD)%.o: $(SOURCE)%.c $(BUILD)
 	@echo Building file: $<
-	$(ARMGNU)-gcc$(QUOTE)  -x c -mthumb -D__SAM3X8E__ -DDEBUG  -I"./source/include/atmel" -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m3 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
+	$(ARMGNU)-gcc$(QUOTE)  -x c -mthumb -D__SAM3X8E__ -DDEBUG  -I "./stdinclude/atmel" -I "./source/include" -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m3 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
 
 $(BUILD):
@@ -65,3 +65,7 @@ clean :
 	-rm -f $(TARGET)
 	-rm -f $(LIST)
 	-rm -f $(MAP)
+
+install:
+	mono ./tools/PortDue/bin/Release/PortDue.exe /dev/ttyACM0
+	bossac -i -d --port ttyACM0 -U false -e -w -v -b ./kernel.bin -R
