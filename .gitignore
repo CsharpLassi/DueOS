@@ -5,3 +5,4 @@ kernel.map
 /build/*
 /tools/PortDue/obj/*
 /tools/PortDue/bin/*
+/tools/PortDue.exe

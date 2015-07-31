@@ -22,6 +22,9 @@ MAP = kernel.map
 # assembly code files in source.
 OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s)) $(patsubst $(SOURCE)%.c,$(BUILD)%.o,$(wildcard $(SOURCE)*.c))
 
+#Toolpath
+TOOL= tools/
+
 # Rule to make everything.
 all: $(TARGET) $(LIST)
 
@@ -56,8 +59,16 @@ $(BUILD)%.o: $(SOURCE)%.c $(BUILD)
 	$(ARMGNU)-gcc$(QUOTE)  -x c -mthumb -D__SAM3X8E__ -DDEBUG  -I "./stdinclude/atmel" -I "./source/include" -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m3 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
 
+
 $(BUILD):
 	mkdir $@
+
+#Tools
+
+tools: $(TOOL)PortDue.exe
+
+$(TOOL)PortDue.exe : $(TOOL)PortDue/Program.cs
+	mcs -out:$(TOOL)PortDue.exe $(TOOL)PortDue/Program.cs
 
 # Rule to clean files.
 clean :
@@ -67,5 +78,5 @@ clean :
 	-rm -f $(MAP)
 
 install:
-	mono ./tools/PortDue/bin/Release/PortDue.exe /dev/ttyACM0
+	mono $(TOOL)PortDue.exe /dev/ttyACM0
 	bossac -i -d --port ttyACM0 -U false -e -w -v -b ./kernel.bin -R
