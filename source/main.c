@@ -1,6 +1,6 @@
 #include "sam3x8e.h"
 #include "uart.h"
-#include "stdio.h"
+#include "console.h"
 
 
 int main(void)
@@ -12,6 +12,6 @@ int main(void)
 
 	while (1)
 	{
-		printf("Hallo Welt\n");
+		uprintf("Hallo Welt %x \n",10);
 	}
 }
