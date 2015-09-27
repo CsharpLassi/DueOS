@@ -1,8 +1,5 @@
 #include "console.h"
-
 #include "irqstate.h"
-
-
 
 void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 {
