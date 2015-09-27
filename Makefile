@@ -59,6 +59,11 @@ $(BUILD)%.o: $(SOURCE)%.c $(BUILD)
 	$(ARMGNU)-gcc$(QUOTE)  -x c -mthumb -D__SAM3X8E__ -DDEBUG  -I "./stdinclude/atmel" -I "./source/include" -O1 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m3 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
 
+$(BUILD)%.o: $(SOURCE)%.s $(BUILD)
+	@echo Building file: $<
+	$(ARMGNU)-as -mcpu=cortex-m3 -mfloat-abi=soft -mthumb   -o "$@" "$<"
+	@echo Finished building: $<
+
 
 $(BUILD):
 	mkdir $@
