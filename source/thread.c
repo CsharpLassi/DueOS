@@ -1,11 +1,7 @@
 #include "thread.h"
 #include "console.h"
 #include "irqstate.h"
-
-#define STACKSIZE 4096
-
-uint8_t stack_a[STACKSIZE];
-uint8_t stack_b[STACKSIZE];
+#include "pmm.h"
 
 irqstate* states[3];
 uint8_t threadcount = 0;
@@ -32,13 +28,15 @@ void InitThread()
 {
   threadcount++;
   currentstate = 1;
-  AddThread(&TaskA,&stack_a[0]);
-  AddThread(&TaskB,&stack_b[0]);
+  AddThread(&TaskA);
+  AddThread(&TaskB);
 }
-void AddThread(void* entry,uint8_t* stack)
+void AddThread(void* entry)
 {
-  irqstate* state = (irqstate*)(stack + STACKSIZE) -1;
-  state->sp = (uint32_t) ((stack + STACKSIZE));
+  uint8_t* stack = pmm_alloc();
+
+  irqstate* state = (irqstate*)(stack + 1024) -1;
+  state->sp = (uint32_t) ((stack + 1024));
   state->psr = 0x41000000;
   state->pc = (uint32_t) entry - 1;
 

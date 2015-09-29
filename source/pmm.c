@@ -13,7 +13,7 @@ void pmm_init()
 uint8_t* pmm_alloc()
 {
   for (uint8_t i = 0; i < MAP; i++) {
-    if (bitmap & (1<<i) == 0) {
+    if ((bitmap & (1<<i)) == 0) {
       bitmap |= 1 << i;
 
       return &memory[i * SIZE];
