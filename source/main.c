@@ -27,12 +27,8 @@ int main(void)
 
 
 
-
+	//Kernel Thread
 	while (1)
 	{
-		uprintf("Test\n");
-
-
-		//uprintf("Secounds: %x \n",RTC->RTC_TIMR & RTC_TIMR_SEC_Msk);
 	}
 }

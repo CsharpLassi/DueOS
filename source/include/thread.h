@@ -8,7 +8,7 @@
 void InitThread();
 void AddThread(void* entry,uint8_t* stack);
 
-irqstate* NextThread();
+irqstate* NextThread(irqstate* oldthread);
 
 
 #endif
