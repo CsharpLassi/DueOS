@@ -2,6 +2,7 @@
 #include "uart.h"
 #include "console.h"
 #include "thread.h"
+#include "pmm.h"
 
 
 
@@ -10,6 +11,8 @@ int main(void)
 	// Initialize the SAM system
 	SystemInit();
 	configure_uart();
+	pmm_init();
+
 	InitThread();
 
 	uprintf("Faultsenable\n");
