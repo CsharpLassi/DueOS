@@ -26,4 +26,4 @@ struct irqstate
 } __attribute__ ((packed));
 typedef struct irqstate irqstate;
 
-#endif __IRQSTATE_H__
+#endif

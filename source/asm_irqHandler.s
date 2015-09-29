@@ -14,7 +14,6 @@ asm_handle_irq:
   push {r4-r11,lr}
   mov r3, lr
   mov r0, sp
-  ;add r0, #0
   bl handle_irq
   mov sp, r0
   mov lr, r3

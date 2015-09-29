@@ -1,7 +1,9 @@
 #include "console.h"
 #include "irqstate.h"
+#include "thread.h"
+#include "sam3x8e.h"
 
-void handle_fault_irq(uint32_t isrnumber,irqstate* state)
+void handle_fault_irq(uint32_t isrnumber,irqstate* state,uint8_t wait)
 {
   switch (isrnumber) {
       case 3:
@@ -9,6 +11,7 @@ void handle_fault_irq(uint32_t isrnumber,irqstate* state)
         break;
       case 4:
           uprintf("Memory-Fault gefunden\n");
+          uprintf("Memory-Address:%x\n",SCB->MMFAR);
           break;
       case 5:
           uprintf("Bus-Fault gefunden\n");
@@ -43,23 +46,22 @@ void handle_fault_irq(uint32_t isrnumber,irqstate* state)
   uprintf("Response: [%x] \n",state->response);
 
 
-  while (1) {}
+  while (wait) {}
 }
 irqstate*  handle_irq(irqstate* state)
 {
-
   IPSR_Type  type;
   type.w = __get_IPSR();
 
-  if (type.b.ISR == 3 || type.b.ISR == 6 ) {
-    handle_fault_irq(type.b.ISR,state);
+  if (type.b.ISR >= 3 && type.b.ISR <= 6 ) {
+    handle_fault_irq(type.b.ISR,state,1);
   }
   else if (type.b.ISR == 15 ) {
-    //handle_fault_irq(type.b.ISR,state);
+    //handle_fault_irq(type.b.ISR,state,0);
+    //handle_fault_irq(type.b.ISR,NextThread(),0);
+    uprintf("Thread Wechsel\n");
+    //return NextThread();
   }
-  else
-  {
-    handle_fault_irq(type.b.ISR,state);
-  }
+
   return state;
 }

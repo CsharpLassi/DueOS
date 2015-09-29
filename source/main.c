@@ -1,6 +1,7 @@
 #include "sam3x8e.h"
 #include "uart.h"
 #include "console.h"
+#include "thread.h"
 
 
 
@@ -9,6 +10,7 @@ int main(void)
 	// Initialize the SAM system
 	SystemInit();
 	configure_uart();
+	InitThread();
 
 	uprintf("Faultsenable\n");
 	SCB->SHCSR |= SCB_SHCSR_USGFAULTENA_Msk  | SCB_SHCSR_BUSFAULTENA_Msk  | SCB_SHCSR_MEMFAULTENA_Msk ;
