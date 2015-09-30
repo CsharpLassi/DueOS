@@ -5,7 +5,6 @@
 void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 {
   //CFSR
-
   switch (isrnumber) {
       case 3:
         uprintf("Hard-Fault gefunden\n");
@@ -49,8 +48,6 @@ void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 
   while (1) {}
 }
-
-
 
 irqstate*  handle_irq(irqstate* state)
 {
