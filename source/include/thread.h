@@ -4,11 +4,6 @@
 #include "irqstate.h"
 #include "stdint.h"
 
-
-void InitThread();
-void AddThread(void* entry);
-irqstate* NextThread(irqstate* oldthread);
-
 struct threadstate
 {
   irqstate* state;
@@ -16,5 +11,12 @@ struct threadstate
   struct threadstate* nextthread;
 };
 typedef struct threadstate threadstate;
+
+
+void InitThread();
+threadstate* AddThread(void* entry);
+void FreeThread(threadstate* thread);
+irqstate* NextThread(irqstate* oldthread);
+
 
 #endif

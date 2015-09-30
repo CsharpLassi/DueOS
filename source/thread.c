@@ -10,33 +10,13 @@ uint16_t threadmap = 0x01;
 
 threadstate* kernelstate;
 
-
-void TaskA()
-{
-  while (1)
-  {
-    uprintf("TaskA\n");
-  }
-}
-
-void TaskB()
-{
-  while (1)
-  {
-    uprintf("TaskB\n");
-  }
-}
-
 void InitThread()
 {
   kernelstate = (threadstate*)pmm_alloc();
-  //kernelstate->stack = &_estack;
   kernelstate->nextthread = 0x00;
 
   threadcount++;
   currentstate = 0;
-  AddThread(&TaskA);
-  AddThread(&TaskB);
 }
 
 threadstate* AllocThreadState()
@@ -51,7 +31,12 @@ threadstate* AllocThreadState()
   return 0x00;
 }
 
-void AddThread(void* entry)
+void FreeThreadState(threadstate* state)
+{
+  threadmap &= ~((1 << ((state - kernelstate)/ sizeof(threadstate) )));
+}
+
+threadstate* AddThread(void* entry)
 {
 
   threadstate* cstate = kernelstate;
@@ -70,9 +55,22 @@ void AddThread(void* entry)
   state->pc = (uint32_t) entry - 1;
 
 
-
+  newstate->nextthread = 0x00;
   newstate->state = state;
   threadcount++;
+
+  return newstate;
+}
+
+void FreeThread(threadstate* thread)
+{
+  threadstate* fstate = kernelstate;
+  while (fstate->nextthread != thread)
+    fstate = fstate->nextthread;
+
+  fstate->nextthread = thread->nextthread;
+
+  FreeThreadState(thread);
 }
 
 irqstate* NextThread(irqstate* oldthread)
@@ -88,13 +86,8 @@ irqstate* NextThread(irqstate* oldthread)
 
   cstate->state = oldthread;
 
-  if (cstate->nextthread == 0x00) {
+  if (cstate->nextthread == 0x00)
     return kernelstate->state;
-  }
   else
-  {
     return cstate->nextthread->state;
-  }
-
-
 }
