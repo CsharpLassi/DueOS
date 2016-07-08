@@ -49,7 +49,7 @@ void __libc_init_array(void);
 /* Default empty handler */
 
 extern void asm_handle_irq(void);
-void handle_irq(void);
+
 
 /* Exception Table */
 __attribute__ ((section(".vectors")))
