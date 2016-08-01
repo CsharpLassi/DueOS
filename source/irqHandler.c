@@ -2,6 +2,8 @@
 #include "sam3x8e.h"
 #include "console.h"
 
+#include "task.h"
+
 void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 {
   //CFSR
@@ -60,10 +62,11 @@ irqstate* handle_irq(irqstate* state)
   }
   else if( type.b.ISR == 15)
   {
+    return nexttask(state);
   }
   else
   {
-
+    handle_fault_irq(type.b.ISR,state);
   }
 
 

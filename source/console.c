@@ -82,6 +82,10 @@ int uprintf(const char* str,...)
 
 			switch (*str)
 			{
+				case 'b':
+					n = va_arg(ap,uint32_t);
+					uputn(n,2);
+					break;
 				case 's':
 					s = va_arg(ap,char*);
 					uputs(s);
