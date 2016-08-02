@@ -64,6 +64,13 @@ irqstate* handle_irq(irqstate* state)
   {
     return nexttask(state);
   }
+  else if (type.b.ISR == 11)
+  {
+    uint32_t* addr = (state->pc -2);
+    uint8_t value = (*addr) & 0xFF;
+
+    return state;
+  }
   else
   {
     handle_fault_irq(type.b.ISR,state);

@@ -3,6 +3,8 @@
 #include "uart.h"
 #include "malloc.h"
 
+#include <stdio.h>
+
 #include "task.h"
 
 volatile uint8_t* stack;
@@ -25,11 +27,15 @@ int main(void)
 {
 	SystemInit();
 
+
 	//Uart aktivieren
 	configure_uart();
 
 	//KernelMalloc
 	stack = malloc(4096);
+
+	//TaskInit
+	inittask();
 
 	//Fehler aktivieren
 	SCB->SHCSR |= SCB_SHCSR_USGFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_MEMFAULTENA_Msk;
@@ -38,7 +44,7 @@ int main(void)
 	WDT->WDT_MR |=WDT_MR_WDDIS;
 
 
-	SysTick_Config(0xFFFF);
+	SysTick_Config(0xFFFFFF);
 
 	registertask(&testtask1);
 	registertask(&testtask2);
@@ -46,6 +52,7 @@ int main(void)
 	//Erlaube Int.
 	__enable_irq();
 
+	//asm("SVC 0x16");
 
 	//Kernel Thread
 	while (1)

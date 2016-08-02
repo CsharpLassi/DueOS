@@ -24,12 +24,6 @@ int uputc(const char c)
 
 int uputs(const char* str)
 {
-	/*
-	for (size_t i = 0; str[i] != '\0'; i++)
-	{
-		uputc(str[i]);
-	}
-	*/
 
 	while (*str) {
 		uputc(*str++);

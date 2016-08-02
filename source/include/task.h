@@ -4,8 +4,8 @@
 #include <stdint.h>
 #include "irqstate.h"
 
+void inittask(void);
 void registertask(void* entrypoint);
-
 irqstate* nexttask(irqstate* oldstate);
 
 #endif

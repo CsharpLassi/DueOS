@@ -8,52 +8,48 @@
 
 #include "sam3x8e.h"
 
-#define TASKCOUNT 8
-
-taskstate states[TASKCOUNT];
-
+taskstate* firsttask;
 taskstate* currenttask;
-uint8_t currenttasknumber = 0;
+
+void inittask(void)
+{
+  firsttask = (taskstate*)malloc(sizeof(taskstate));
+  firsttask->nexttask = 0;
+  currenttask = firsttask;
+}
 
 void registertask(void* entrypoint)
 {
     //TODO: Böse
     __disable_irq();
 
-  for (uint8_t i = 1; i < TASKCOUNT; i++) {
-      if (!states[i].enable) {
+    taskstate* task = (taskstate*)malloc(sizeof(taskstate));
+    uint8_t* stack = malloc(256);
 
-        states[i].enable = 1;
-        uint8_t* stack = (irqstate*)malloc(256);
+    task->state =(irqstate*)(stack+256-sizeof(irqstate));
+    task->state->psr = 0x41000000;
+    task->state->pc = (uint32_t)entrypoint-1;
+    task->state->sp = (stack+256);
+    task->nexttask = 0;
 
-        states[i].state =(irqstate*)(stack+256-sizeof(irqstate));
-        states[i].state->psr = 0x41000000;
-        states[i].state->pc = (uint32_t)entrypoint-1;
-        states[i].state->sp = (stack+256);
-        break;
-      }
-  }
+
+    taskstate* lasttask = firsttask;
+    while (lasttask->nexttask != 0)
+      lasttask = lasttask->nexttask;
+
+   lasttask->nexttask = task;
+
   __enable_irq();
 }
 
-irqstate* nexttask(irqstate* oldtask)
+irqstate* nexttask(irqstate* oldstate)
 {
+  currenttask->state = oldstate;
 
-  states[currenttasknumber].state = oldtask;
-  if (currenttasknumber == 0)
-    states[0].enable = 1;
-
-  uint8_t nexttasknumber= currenttasknumber;
-
-
-  do {
-    nexttasknumber = (nexttasknumber +1)%TASKCOUNT;
-  } while(!states[nexttasknumber].enable);
-
-  currenttasknumber = nexttasknumber;
-  currenttask = &states[currenttasknumber];
-
-  //uprintf("%d\n",currenttasknumber);
+  if (currenttask->nexttask != 0)
+    currenttask = currenttask->nexttask;
+  else
+    currenttask = firsttask;
 
   return currenttask->state;
 }

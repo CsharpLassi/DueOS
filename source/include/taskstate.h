@@ -8,6 +8,7 @@ struct taskstate
 {
   uint8_t enable;
   irqstate* state;
+  struct taskstate * nexttask;
 } __attribute__((packed));
 typedef struct taskstate taskstate;
 
