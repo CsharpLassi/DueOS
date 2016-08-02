@@ -46,6 +46,8 @@ void handle_fault_irq(uint32_t isrnumber,irqstate* state)
   uprintf("PSR: [%x] \n",state->psr);
   uprintf("SP: [%x] \n",state->sp);
   uprintf("Response: [%x] \n",state->response);
+
+  while(1);
 }
 
 irqstate* handle_irq(irqstate* state)
@@ -59,7 +61,9 @@ irqstate* handle_irq(irqstate* state)
   }
   else if( type.b.ISR == 15)
   {
-    return nexttask(state);
+    irqstate* nextstate = nexttask(state);
+    //handle_fault_irq(type.b.ISR,nextstate);
+    return nextstate;
   }
   else if (type.b.ISR == 11)
   {
@@ -74,7 +78,6 @@ irqstate* handle_irq(irqstate* state)
   else
   {
     handle_fault_irq(type.b.ISR,state);
-    return closecurrenttask();
   }
 
 

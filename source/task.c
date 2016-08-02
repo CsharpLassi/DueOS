@@ -31,7 +31,7 @@ void registertask(void* entrypoint)
     task->state->pc = (uint32_t)entrypoint-1;
     task->state->sp = (stack+256);
     task->nexttask = 0;
-
+    task->stack = stack;
 
     taskstate* lasttask = firsttask;
     while (lasttask->nexttask != 0)
@@ -56,6 +56,9 @@ irqstate* closecurrenttask(void)
   else
     lasttask->nexttask = firsttask;
   //Aufräumen
+
+  free(lasttask->stack);
+  free(lasttask);
 
   currenttask = lasttask->nexttask;
 

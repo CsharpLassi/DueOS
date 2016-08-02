@@ -56,6 +56,6 @@ int main(void)
 	//Kernel Thread
 	while (1)
 	{
-		//uprintf("Hallo Welt!\n");
+		uprintf("Hallo Welt!\n");
 	}
 }

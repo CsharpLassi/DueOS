@@ -1,28 +1,53 @@
 #include<stdint.h>
 
 #include "malloc.h"
+#include "memorysegment.h"
+#include "console.h"
 
-uint8_t segments[SEGMENTCOUNT];
+memorysegment* firstsegment = 0;
 
 uint8_t* malloc(uint32_t length)
 {
-  uint16_t segmentcount = length / (SEGMENTSIZE);
-  if (length % SEGMENTSIZE)
-    segmentcount++;
+  uint8_t* resultsegment = 0;
 
-  uint8_t* startsegement = 0;
+  length += (4 -length %4);
 
-  for (uint32_t i = 0; i < SEGMENTCOUNT * 8 && segmentcount > 0; i++)
+  if (firstsegment == 0)
   {
-    if (!(segments[i>>3] & (1<<(i%8))))
-    {
-      if(startsegement == 0)
-        startsegement = PAGESTART + i * 64;
+    firstsegment = PAGESTART;
+    firstsegment->length = length;
+    firstsegment->nextsegment = 0;
 
-      segmentcount--;
-      segments[i>>3] |= 1 << (i % 8);
+    resultsegment = (uint8_t*)firstsegment + sizeof(memorysegment);
+  }
+  else
+  {
+    memorysegment* lastsegment = firstsegment;
+    while (lastsegment->nextsegment != 0 && (uint32_t)(lastsegment->nextsegment) - (uint32_t)lastsegment - lastsegment->length - sizeof(memorysegment) < length + sizeof(memorysegment) )
+    {
+      lastsegment = lastsegment->nextsegment;
     }
+    memorysegment* newsegment =  (uint8_t*)(lastsegment +1) + lastsegment->length;
+    newsegment->length = length;
+    newsegment->nextsegment = lastsegment->nextsegment;
+
+    lastsegment->nextsegment = newsegment;
+
+    resultsegment = (uint8_t*)newsegment + sizeof(memorysegment);
   }
 
-  return startsegement;
+  memorysegment* ls = firstsegment;
+
+  return resultsegment;
+}
+
+void free(uint8_t* addr )
+{
+  uint8_t* segment = (addr - sizeof(memorysegment));
+  memorysegment* lastsegment = firstsegment;
+  while((uint8_t*)lastsegment->nextsegment != segment)
+    lastsegment = lastsegment->nextsegment;
+
+  lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
+
 }
