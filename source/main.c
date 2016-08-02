@@ -38,7 +38,7 @@ int main(void)
 	WDT->WDT_MR |=WDT_MR_WDDIS;
 
 
-	SysTick_Config(0xFFFFFF);
+	SysTick_Config(0xFFFF);
 
 	registertask(&testtask1);
 	registertask(&testtask2);

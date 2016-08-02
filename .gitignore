@@ -1,8 +1,16 @@
-kernel.bin
-kernel.list
-kernel.map
+*.bin
+*.list
+*.map
+*.o
+*.d
 
-/build/*
+*.eep
+*.elf
+*.hex
+*.srec
+
+*.swp
+
 /tools/PortDue/obj/*
 /tools/PortDue/bin/*
 /tools/PortDue.exe
