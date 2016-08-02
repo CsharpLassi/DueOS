@@ -4,6 +4,7 @@
 #include "malloc.h"
 
 #include <stdio.h>
+#include "syscalls.h"ma
 
 #include "task.h"
 
@@ -20,13 +21,13 @@ void testtask2() {
 	while(1)
 	{
 		uprintf("Hallo TestTask 2\n");
+		exit();
 	}
 }
 
 int main(void)
 {
 	SystemInit();
-
 
 	//Uart aktivieren
 	configure_uart();
@@ -51,8 +52,6 @@ int main(void)
 
 	//Erlaube Int.
 	__enable_irq();
-
-	//asm("SVC 0x16");
 
 	//Kernel Thread
 	while (1)

@@ -42,6 +42,28 @@ void registertask(void* entrypoint)
   __enable_irq();
 }
 
+irqstate* closecurrenttask(void)
+{
+  if (currenttask == firsttask)
+    return;
+
+  taskstate* lasttask = firsttask;
+  while (lasttask->nexttask != currenttask)
+    lasttask = lasttask->nexttask;
+
+  if(currenttask->nexttask != 0)
+    lasttask->nexttask = currenttask->nexttask;
+  else
+    lasttask->nexttask = firsttask;
+  //Aufräumen
+
+  currenttask = lasttask->nexttask;
+
+
+
+  return currenttask->state;
+}
+
 irqstate* nexttask(irqstate* oldstate)
 {
   currenttask->state = oldstate;

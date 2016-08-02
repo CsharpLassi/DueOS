@@ -46,9 +46,6 @@ void handle_fault_irq(uint32_t isrnumber,irqstate* state)
   uprintf("PSR: [%x] \n",state->psr);
   uprintf("SP: [%x] \n",state->sp);
   uprintf("Response: [%x] \n",state->response);
-
-
-  while (1) {}
 }
 
 irqstate* handle_irq(irqstate* state)
@@ -69,11 +66,15 @@ irqstate* handle_irq(irqstate* state)
     uint32_t* addr = (state->pc -2);
     uint8_t value = (*addr) & 0xFF;
 
+    if (value == 0)
+      return closecurrenttask();
+
     return state;
   }
   else
   {
     handle_fault_irq(type.b.ISR,state);
+    return closecurrenttask();
   }
 
 
