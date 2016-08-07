@@ -1,3 +1,13 @@
 ->Exception
 ->Programm upload
+->Debugmöglichkeiten
 ->syscall
+-->malloc
+-->print
+->besseres Ressourcenmanagment
+-->freigeben von Ressourcen von Tasks, wenn sie beendet wurden sind
+->Taskverwaltung
+-->Task darf sich beenden
+-->Sleep für Tasks
+->semaphore für Interrupt unterbrechung
+->Echtzeitfähigkeit
