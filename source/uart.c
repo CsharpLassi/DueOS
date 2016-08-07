@@ -3,7 +3,7 @@
 
 void configure_uart(void)
 {
-  uint32_t ul_sr;
+   //uint32_t ul_sr;
 
   	// ==> Pin configuration
   	// Disable interrupts on Rx and Tx
@@ -13,8 +13,8 @@ void configure_uart(void)
   	PIOA->PIO_PDR = PIO_PA8A_URXD | PIO_PA9A_UTXD;
 
   	// Read current peripheral AB select register and set the Rx and Tx pins to 0 (Peripheral A function)
-  	ul_sr = PIOA->PIO_ABSR;
-  	PIOA->PIO_ABSR &= ~(PIO_PA8A_URXD | PIO_PA9A_UTXD) & ul_sr;
+  	//ul_sr = PIOA->PIO_ABSR;
+  	PIOA->PIO_ABSR &= ~(PIO_PA8A_URXD | PIO_PA9A_UTXD); //& ul_sr;
 
   	// Enable the pull up on the Rx and Tx pin
   	PIOA->PIO_PUER = PIO_PA8A_URXD | PIO_PA9A_UTXD;
