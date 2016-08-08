@@ -36,8 +36,6 @@ uint8_t* malloc(uint32_t length)
     resultsegment = (uint8_t*)newsegment + sizeof(memorysegment);
   }
 
-  memorysegment* ls = firstsegment;
-
   return resultsegment;
 }
 

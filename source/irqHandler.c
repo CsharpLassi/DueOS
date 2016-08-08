@@ -2,7 +2,36 @@
 #include "sam3x8e.h"
 #include "console.h"
 
+#include "irqhandler.h"
 #include "task.h"
+
+uint16_t irqlockcount = 1;
+
+void releaseirq(void)
+{
+
+
+
+  if (irqlockcount > 0)
+    irqlockcount--;
+
+    if(irqlockcount == 0)
+    {
+      __enable_irq();
+    }
+
+}
+void aquireirq(void)
+{
+
+  if(irqlockcount == 0)
+  {
+    __disable_irq();
+  }
+
+  irqlockcount += 1;
+
+}
 
 void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 {

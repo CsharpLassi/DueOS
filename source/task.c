@@ -6,6 +6,8 @@
 #include "console.h"
 #include "malloc.h"
 
+#include "irqhandler.h"
+
 #include "sam3x8e.h"
 
 taskstate* firsttask;
@@ -20,8 +22,7 @@ void inittask(void)
 
 void registertask(void* entrypoint)
 {
-    //TODO: Böse
-    __disable_irq();
+    aquireirq();
 
     taskstate* task = (taskstate*)malloc(sizeof(taskstate));
     uint8_t* stack = malloc(256);
@@ -39,11 +40,13 @@ void registertask(void* entrypoint)
 
    lasttask->nexttask = task;
 
-  __enable_irq();
+   releaseirq();
 }
 
 irqstate* closecurrenttask(void)
 {
+  aquireirq();
+
   if (currenttask == firsttask)
     return;
 
@@ -55,14 +58,13 @@ irqstate* closecurrenttask(void)
     lasttask->nexttask = currenttask->nexttask;
   else
     lasttask->nexttask = firsttask;
-  //Aufräumen
 
   free(lasttask->stack);
   free(lasttask);
 
   currenttask = lasttask->nexttask;
 
-
+  releaseirq();
 
   return currenttask->state;
 }

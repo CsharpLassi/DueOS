@@ -9,5 +9,4 @@
 ->Taskverwaltung
 -->Task darf sich beenden
 -->Sleep für Tasks
-->semaphore für Interrupt unterbrechung
 ->Echtzeitfähigkeit

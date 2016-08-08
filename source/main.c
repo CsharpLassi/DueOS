@@ -1,14 +1,12 @@
+#include <stdint.h>
+
+#include "irqhandler.h"
 #include "sam3x8e.h"
 #include "console.h"
 #include "uart.h"
 #include "malloc.h"
-
-#include <stdio.h>
-#include "syscalls.h"ma
-
+#include "syscalls.h"
 #include "task.h"
-
-volatile uint8_t* stack;
 
 void testtask1() {
 	while(1)
@@ -32,9 +30,6 @@ int main(void)
 	//Uart aktivieren
 	configure_uart();
 
-	//KernelMalloc
-	stack = malloc(4096);
-
 	//TaskInit
 	inittask();
 
@@ -51,7 +46,7 @@ int main(void)
 	registertask(&testtask2);
 
 	//Erlaube Int.
-	__enable_irq();
+	releaseirq();
 
 	//Kernel Thread
 	while (1)
