@@ -18,6 +18,18 @@ void printtasks(void)
   }
 }
 
+void printmalloc(void)
+{
+  memorysegment* ms = getfirstmemorysegment();
+  while (ms != 0)
+  {
+    uprintf("Segment %x\n",ms);
+    uprintf("-Length %x\n",ms->length);
+
+    ms = ms->nextsegment;
+  }
+}
+
 void debugloop(void)
 {
   uprintf("Debugmodus aktiviert\n");
@@ -27,6 +39,7 @@ void debugloop(void)
   while(!ureadln(str,64) && !strcmp(str,"end") )
   {
     if(strcmp(str,"gettasks")) printtasks();
+    else if(strcmp(str,"getmalloc")) printmalloc();
   }
 
   uprintf("Debugmodus deaktiviert\n");

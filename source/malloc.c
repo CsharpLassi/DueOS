@@ -49,3 +49,8 @@ void free(uint8_t* addr )
   lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
 
 }
+
+memorysegment* getfirstmemorysegment()
+{
+  return firstsegment;
+}
