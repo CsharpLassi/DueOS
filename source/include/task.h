@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 #include "irqstate.h"
+#include "taskstate.h"
+
+taskstate* getfirsttask();
 
 void inittask(void);
 void registertask(void* entrypoint);

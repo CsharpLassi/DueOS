@@ -13,7 +13,10 @@
 taskstate* firsttask;
 taskstate* currenttask;
 
-
+taskstate*  getfirsttask()
+{
+  return firsttask;
+}
 
 void inittask(void)
 {

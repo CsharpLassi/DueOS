@@ -12,6 +12,17 @@ int ugetc(char *c)
 	return 0;
 }
 
+int ureadln(char* str,uint8_t size)
+{
+	uint8_t i = 0;
+	while (i < size -1 && !ugetc(&str[i]) && str[i] != '\n')
+		i++;
+
+	str[i] = 0;
+
+	return 0;
+}
+
 int uputc(const char c)
 {
 	// Check if the transmitter is ready

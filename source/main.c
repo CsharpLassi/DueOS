@@ -7,16 +7,13 @@
 #include "malloc.h"
 #include "syscalls.h"
 #include "task.h"
+#include "debug.h"
+#include "string.h"
 
 void testtask1() {
 	while(1)
 	{
-		uprintf("Hallo TestTask 1\n");
 	}
-}
-
-void testtask2() {
-	uprintf("Hallo TestTask 2\n");
 }
 
 int main(void)
@@ -39,14 +36,18 @@ int main(void)
 	SysTick_Config(0xFFFFFF);
 
 	registertask(&testtask1);
-	registertask(&testtask2);
 
 	//Erlaube Int.
 	releaseirq();
 
+	char* ic = (char*)malloc(64);
 	//Kernel Thread
 	while (1)
 	{
-		uprintf("Hallo Welt!\n");
+
+		ureadln(ic,64);
+		if(strcmp(ic,"debug"))
+			debugloop();
+
 	}
 }

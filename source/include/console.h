@@ -9,6 +9,6 @@ int uputc(const char c );
 int uputs(const char* str);
 int uputn(uint32_t value,uint8_t base);
 int uprintf(const char* str, ...);
-
+int ureadln(char* str,uint8_t size);
 
 #endif
