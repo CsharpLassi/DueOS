@@ -1,17 +1,19 @@
 #include <stdint.h>
+#include "sam3x8e.h"
 
 #include "irqstate.h"
 #include "task.h"
 #include "taskstate.h"
 #include "console.h"
 #include "malloc.h"
-
 #include "irqhandler.h"
+#include "syscalls.h"
 
-#include "sam3x8e.h"
 
 taskstate* firsttask;
 taskstate* currenttask;
+
+
 
 void inittask(void)
 {
@@ -31,6 +33,7 @@ void registertask(void* entrypoint)
     task->state->psr = 0x41000000;
     task->state->pc = (uint32_t)entrypoint-1;
     task->state->sp = (stack+256);
+    task->state->lr = &exittask;
     task->nexttask = 0;
     task->stack = stack;
 
@@ -41,6 +44,11 @@ void registertask(void* entrypoint)
    lasttask->nexttask = task;
 
    releaseirq();
+}
+
+void exittask(void)
+{
+  exit();
 }
 
 irqstate* closecurrenttask(void)

@@ -16,11 +16,7 @@ void testtask1() {
 }
 
 void testtask2() {
-	while(1)
-	{
-		uprintf("Hallo TestTask 2\n");
-		exit();
-	}
+	uprintf("Hallo TestTask 2\n");
 }
 
 int main(void)

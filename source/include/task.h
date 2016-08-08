@@ -7,8 +7,9 @@
 void inittask(void);
 void registertask(void* entrypoint);
 
-irqstate* closecurrenttask(void);
+void exittask(void);
 
+irqstate* closecurrenttask(void);
 irqstate* nexttask(irqstate* oldstate);
 
 #endif

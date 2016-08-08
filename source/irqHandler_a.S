@@ -3,6 +3,7 @@
 
 .extern handle_irq
 .global asm_handle_irq
+.global asm_returntask
 
 .text
 
