@@ -1,13 +1,13 @@
 #include<stdint.h>
 
-#include "malloc.h"
+#include "pmm.h"
 #include "memorysegment.h"
 #include "console.h"
 #include "task.h"
 
 memorysegment* firstsegment = 0;
 
-uint8_t* malloc(uint32_t length)
+uint8_t* pmm_malloc(uint32_t length)
 {
   uint8_t* resultsegment = 0;
 
@@ -45,7 +45,7 @@ uint8_t* malloc(uint32_t length)
   return resultsegment;
 }
 
-void free(uint8_t* addr )
+void pmm_free(uint8_t* addr )
 {
   uint8_t* segment = (addr - sizeof(memorysegment));
   memorysegment* lastsegment = firstsegment;
@@ -56,7 +56,7 @@ void free(uint8_t* addr )
 
 }
 
-void clean(uint32_t handle)
+void pmm_clean(uint32_t handle)
 {
   memorysegment* lastsegment = firstsegment;
   while((uint8_t*)lastsegment->nextsegment != 0)
@@ -70,7 +70,7 @@ void clean(uint32_t handle)
   }
 }
 
-memorysegment* getfirstmemorysegment()
+memorysegment* pmm_getfirstmemorysegment()
 {
   return firstsegment;
 }

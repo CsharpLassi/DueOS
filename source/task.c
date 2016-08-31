@@ -5,7 +5,7 @@
 #include "task.h"
 #include "taskstate.h"
 #include "console.h"
-#include "malloc.h"
+#include "pmm.h"
 #include "irqhandler.h"
 #include "syscalls.h"
 
@@ -20,7 +20,7 @@ taskstate*  getfirsttask()
 
 void inittask(void)
 {
-  firsttask = (taskstate*)malloc(sizeof(taskstate));
+  firsttask = (taskstate*)pmm_malloc(sizeof(taskstate));
   firsttask->nexttask = 0;
   currenttask = firsttask;
 }
@@ -29,8 +29,8 @@ void registertask(void* entrypoint)
 {
     aquireirq();
 
-    taskstate* task = (taskstate*)malloc(sizeof(taskstate));
-    uint8_t* stack = malloc(256);
+    taskstate* task = (taskstate*)pmm_malloc(sizeof(taskstate));
+    uint8_t* stack = pmm_malloc(256);
 
     task->state =(irqstate*)(stack+256-sizeof(irqstate));
     task->state->psr = 0x41000000;
@@ -70,9 +70,9 @@ irqstate* closecurrenttask(void)
   else
     lasttask->nexttask = firsttask;
 
-  clean(currenttask);
-  free(currenttask->stack);
-  free(currenttask);
+  pmm_clean(currenttask);
+  pmm_free(currenttask->stack);
+  pmm_free(currenttask);
 
   currenttask = lasttask->nexttask;
 

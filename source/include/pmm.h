@@ -8,10 +8,10 @@
 #define PAGESTART 0x20000000 + KERNELSTACK
 #define PAGELENGTH 0x00018000 - KERNELSTACK
 
-uint8_t* malloc(uint32_t length);
-void clean(uint32_t handle);
-void free(uint8_t* addr);
+uint8_t* pmm_malloc(uint32_t length);
+void pmm_clean(uint32_t handle);
+void pmm_free(uint8_t* addr);
 
-memorysegment* getfirstmemorysegment();
+memorysegment* pmm_getfirstmemorysegment();
 
 #endif

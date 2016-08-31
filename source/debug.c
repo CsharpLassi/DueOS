@@ -1,6 +1,6 @@
 #include "debug.h"
 #include "console.h"
-#include "malloc.h"
+#include "pmm.h"
 #include "string.h"
 #include "task.h"
 
@@ -20,7 +20,7 @@ void printtasks(void)
 
 void printmalloc(void)
 {
-  memorysegment* ms = getfirstmemorysegment();
+  memorysegment* ms = pmm_getfirstmemorysegment();
   while (ms != 0)
   {
     uprintf("Segment %x\n",ms);
@@ -35,7 +35,7 @@ void debugloop(void)
 {
   uprintf("Debugmodus aktiviert\n");
 
-  char* str = malloc(64);
+  char* str = pmm_malloc(64);
 
   while(!ureadln(str,64) && !strcmp(str,"end") )
   {
@@ -44,5 +44,5 @@ void debugloop(void)
   }
 
   uprintf("Debugmodus deaktiviert\n");
-  free((uint8_t*)str);
+  pmm_free((uint8_t*)str);
 }

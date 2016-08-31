@@ -4,7 +4,7 @@
 #include "sam3x8e.h"
 #include "console.h"
 #include "uart.h"
-#include "malloc.h"
+#include "pmm.h"
 #include "syscalls.h"
 #include "task.h"
 #include "debug.h"
@@ -40,7 +40,7 @@ int main(void)
 	//Erlaube Int.
 	releaseirq();
 
-	char* ic = (char*)malloc(64);
+	char* ic = (char*)pmm_malloc(64);
 	//Kernel Thread
 	while (1)
 	{
