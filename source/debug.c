@@ -24,6 +24,7 @@ void printmalloc(void)
   while (ms != 0)
   {
     uprintf("Segment %x\n",ms);
+    uprintf("-Taskhandle %x\n",ms->taskhandle);
     uprintf("-Length %x\n",ms->length);
 
     ms = ms->nextsegment;

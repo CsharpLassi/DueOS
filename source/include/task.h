@@ -9,8 +9,9 @@ taskstate* getfirsttask();
 
 void inittask(void);
 void registertask(void* entrypoint);
-
 void exittask(void);
+
+uint32_t getcurrenttaskhandle();
 
 irqstate* closecurrenttask(void);
 irqstate* nexttask(irqstate* oldstate);

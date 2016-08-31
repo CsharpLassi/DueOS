@@ -70,8 +70,9 @@ irqstate* closecurrenttask(void)
   else
     lasttask->nexttask = firsttask;
 
-  free(lasttask->stack);
-  free(lasttask);
+  clean(currenttask);
+  free(currenttask->stack);
+  free(currenttask);
 
   currenttask = lasttask->nexttask;
 
@@ -90,4 +91,9 @@ irqstate* nexttask(irqstate* oldstate)
     currenttask = firsttask;
 
   return currenttask->state;
+}
+
+uint32_t getcurrenttaskhandle()
+{
+  return (uint32_t)currenttask;
 }

@@ -6,6 +6,7 @@
 struct memorysegment
 {
   uint32_t length;
+  uint32_t taskhandle;
   struct memorysegment* nextsegment;
 }__attribute__((packed));
 typedef struct memorysegment memorysegment;

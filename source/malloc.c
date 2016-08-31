@@ -3,6 +3,7 @@
 #include "malloc.h"
 #include "memorysegment.h"
 #include "console.h"
+#include "task.h"
 
 memorysegment* firstsegment = 0;
 
@@ -18,6 +19,8 @@ uint8_t* malloc(uint32_t length)
     firstsegment->length = length;
     firstsegment->nextsegment = 0;
 
+    firstsegment->taskhandle = getcurrenttaskhandle();
+
     resultsegment = (uint8_t*)firstsegment + sizeof(memorysegment);
   }
   else
@@ -30,11 +33,14 @@ uint8_t* malloc(uint32_t length)
     memorysegment* newsegment =  (uint8_t*)(lastsegment +1) + lastsegment->length;
     newsegment->length = length;
     newsegment->nextsegment = lastsegment->nextsegment;
+    newsegment->taskhandle = getcurrenttaskhandle();
 
     lastsegment->nextsegment = newsegment;
 
     resultsegment = (uint8_t*)newsegment + sizeof(memorysegment);
   }
+
+
 
   return resultsegment;
 }
@@ -48,6 +54,20 @@ void free(uint8_t* addr )
 
   lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
 
+}
+
+void clean(uint32_t handle)
+{
+  memorysegment* lastsegment = firstsegment;
+  while((uint8_t*)lastsegment->nextsegment != 0)
+  {
+    if (lastsegment->taskhandle == handle)
+    {
+      lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
+    }
+
+    lastsegment = lastsegment->nextsegment;
+  }
 }
 
 memorysegment* getfirstmemorysegment()
