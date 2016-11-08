@@ -1,21 +1,15 @@
 .syntax unified
 .thumb
 
-.global exit
+.global close
 .global malloc
-.global malloc_irq
-
-.extern pmm_malloc
 
 .text
 
-exit:
+close:
   svc 0x00
   bx lr
 
 malloc:
   svc 0x01
   bx lr
-
-malloc_irq:
-  b pmm_malloc

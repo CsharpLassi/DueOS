@@ -39,7 +39,7 @@ void debugloop(void)
 {
   uprintf("Debugmodus aktiviert\n");
 
-  char* str = pmm_malloc(64);
+  char* str = (char*)pmm_malloc(64);
 
   while(!ureadln(str,64) && !strcmp(str,"end") )
   {

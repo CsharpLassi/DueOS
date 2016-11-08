@@ -20,6 +20,15 @@ void testtask1() {
 	}
 }
 
+void testtask2() {
+	uprintf("TestTask 2 Start\n");
+	while(1)
+	{
+		uprintf("TestTask 2\n");
+	}
+}
+
+
 int main(void)
 {
 	SystemInit();
@@ -39,21 +48,22 @@ int main(void)
 
 
 
-	SysTick_Config(0xFFFFFF);
+	SysTick_Config(0xFFFF);
 
-	registertask(&testtask1);
+	//registertask(&testtask1);
+	//registertask(&testtask2);
 
 	//Erlaube Int.
 	__enable_irq();
 
-	char* ic = (char*)pmm_malloc(64);
+	//char* ic = (char*)pmm_malloc(64);
 	//Kernel Thread
 	while (1)
 	{
-
-		ureadln(ic,64);
-		if(strcmp(ic,"debug"))
-			debugloop();
+		uprintf("Kernel\n");
+		//ureadln(ic,64);
+		//if(strcmp(ic,"debug"))
+			//debugloop();
 
 	}
 }

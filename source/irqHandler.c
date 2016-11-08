@@ -2,8 +2,7 @@
 #include "sam3x8e.h"
 #include "console.h"
 #include "task.h"
-
-extern uint32_t malloc_irq(uint32_t);
+#include "pmm.h"
 
 void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 {
@@ -51,41 +50,54 @@ void handle_fault_irq(uint32_t isrnumber,irqstate* state)
   while(1);
 }
 
+irqstate* HandleSysCall(irqstate* state)
+{
+  uint32_t* addr = (uint32_t*)(state->pc -2);
+  uint8_t value = (*addr) & 0xFF;
+
+  switch (value)
+  {
+    handle_fault_irq(16,state);
+
+    case 0:
+      state =  closecurrenttask();
+      break;
+    case 1:
+      (uint32_t)pmm_malloc(state->r0);
+      break;
+    default:
+      break;
+  }
+
+  return state;
+}
+
 irqstate* handle_irq(irqstate* state)
 {
   IPSR_Type type;
   type.w = __get_IPSR();
 
-  //Schwere Fehler
-  if (type.b.ISR >= 3 && type.b.ISR <= 6 ) {
-    handle_fault_irq(type.b.ISR,state);
-  }
-  else if( type.b.ISR == 15)
+  switch (type.b.ISR)
   {
-    irqstate* nextstate = nexttask(state);
-    //handle_fault_irq(type.b.ISR,nextstate);
-    return nextstate;
-  }
-  else if (type.b.ISR == 11)
-  {
-    uint32_t* addr = (state->pc -2);
-    uint8_t value = (*addr) & 0xFF;
-
-    if (value == 0) //exit
-      return closecurrenttask();
-    else if(value == 1) //malloc
-    {
-      state->r0 = malloc_irq(state->r0);
+    case 0:
+    case 1:
+    case 2:
+      break;
+    case 3:
+    case 4:
+    case 5:
+    case 6:
       handle_fault_irq(type.b.ISR,state);
-    }
-
-    return state;
+      break;
+    case 15:
+      state = nexttask(state);
+      break;
+    case 16:
+      state = HandleSysCall(state);
+      break;
+    default :
+      break;
   }
-  else
-  {
-    handle_fault_irq(type.b.ISR,state);
-  }
-
 
   return state;
 }

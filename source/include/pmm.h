@@ -9,7 +9,6 @@
 #define PAGELENGTH 0x00018000 - KERNELSTACK
 
 uint8_t* pmm_malloc(uint32_t length);
-void pmm_clean(uint32_t handle);
 void pmm_free(uint8_t* addr);
 
 memorysegment* pmm_getfirstmemorysegment();

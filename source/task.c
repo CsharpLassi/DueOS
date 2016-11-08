@@ -32,9 +32,9 @@ void registertask(void* entrypoint)
     task->state =(irqstate*)(stack+256-sizeof(irqstate));
     task->state->psr = 0x41000000;
     task->state->pc = (uint32_t)entrypoint-1;
-    task->state->sp = (stack+256);
-    task->state->lr = &exittask;
-    task->nexttask = 0;
+    task->state->sp = (uint32_t)(stack+256);
+    task->state->lr = (uint32_t)&exittask;
+    task->nexttask =  (uint32_t)0;
     task->stack = stack;
 
     taskstate* lasttask = firsttask;
@@ -46,14 +46,14 @@ void registertask(void* entrypoint)
 
 void exittask(void)
 {
-  exit();
+  close();
 }
 
 irqstate* closecurrenttask(void)
 {
 
   if (currenttask == firsttask)
-    return;
+    return currenttask->state;
 
   taskstate* lasttask = firsttask;
   while (lasttask->nexttask != currenttask)
@@ -64,9 +64,8 @@ irqstate* closecurrenttask(void)
   else
     lasttask->nexttask = firsttask;
 
-  pmm_clean(currenttask);
-  pmm_free(currenttask->stack);
-  pmm_free(currenttask);
+  pmm_free((uint8_t*)currenttask->stack);
+  pmm_free((uint8_t*)currenttask);
 
   currenttask = lasttask->nexttask;
 

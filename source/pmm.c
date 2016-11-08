@@ -15,7 +15,7 @@ uint8_t* pmm_malloc(uint32_t length)
 
   if (firstsegment == 0)
   {
-    firstsegment = PAGESTART;
+    firstsegment = (memorysegment*)PAGESTART;
     firstsegment->length = length;
     firstsegment->nextsegment = 0;
 
@@ -30,7 +30,7 @@ uint8_t* pmm_malloc(uint32_t length)
     {
       lastsegment = lastsegment->nextsegment;
     }
-    memorysegment* newsegment =  (uint8_t*)(lastsegment +1) + lastsegment->length;
+    memorysegment* newsegment =  (memorysegment*)((uint8_t*)(lastsegment +1) + lastsegment->length);
     newsegment->length = length;
     newsegment->nextsegment = lastsegment->nextsegment;
     newsegment->taskhandle = getcurrenttaskhandle();
@@ -54,20 +54,6 @@ void pmm_free(uint8_t* addr )
 
   lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
 
-}
-
-void pmm_clean(uint32_t handle)
-{
-  memorysegment* lastsegment = firstsegment;
-  while((uint8_t*)lastsegment->nextsegment != 0)
-  {
-    if (lastsegment->taskhandle == handle)
-    {
-      lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
-    }
-
-    lastsegment = lastsegment->nextsegment;
-  }
 }
 
 memorysegment* pmm_getfirstmemorysegment()
