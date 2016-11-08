@@ -1,25 +1,21 @@
 #include "console.h"
 #include "sam3x8e.h"
-#include "irqhandler.h"
 
 //TODO: Unschön
 int ugetc(char *c)
 {
-	aquireirq();
 
 	// Check if the receiver is ready
 	while((UART->UART_SR & UART_SR_RXRDY) == 0);
 
 	// Read the character
 	*c = (uint8_t) UART->UART_RHR;
-	releaseirq();
 
 	return 0;
 }
 
 int ureadln(char* str,uint8_t size)
 {
-	aquireirq();
 
 	uint8_t i = 0;
 	while (i < size -1 && !ugetc(&str[i]) && str[i] != '\n')
@@ -29,7 +25,6 @@ int ureadln(char* str,uint8_t size)
 
 	return 0;
 
-	releaseirq();
 }
 
 int uputc(const char c)

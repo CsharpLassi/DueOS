@@ -1,37 +1,9 @@
 #include "irqstate.h"
 #include "sam3x8e.h"
 #include "console.h"
-
-#include "irqhandler.h"
 #include "task.h"
 
-uint16_t irqlockcount = 1;
-
-void releaseirq(void)
-{
-
-
-
-  if (irqlockcount > 0)
-    irqlockcount--;
-
-    if(irqlockcount == 0)
-    {
-      __enable_irq();
-    }
-
-}
-void aquireirq(void)
-{
-
-  if(irqlockcount == 0)
-  {
-    __disable_irq();
-  }
-
-  irqlockcount += 1;
-
-}
+extern uint32_t malloc_irq(uint32_t);
 
 void handle_fault_irq(uint32_t isrnumber,irqstate* state)
 {
@@ -99,8 +71,13 @@ irqstate* handle_irq(irqstate* state)
     uint32_t* addr = (state->pc -2);
     uint8_t value = (*addr) & 0xFF;
 
-    if (value == 0)
+    if (value == 0) //exit
       return closecurrenttask();
+    else if(value == 1) //malloc
+    {
+      state->r0 = malloc_irq(state->r0);
+      handle_fault_irq(type.b.ISR,state);
+    }
 
     return state;
   }

@@ -47,7 +47,7 @@ $(TARGET) : $(BUILD)output.elf
 # Rule to make the elf file.
 $(BUILD)output.elf : $(OBJECTS)
 	@echo Building target: $@
-	$(ARMGNU)-gcc -o $@  -mthumb -Wl,--start-group -lm  -Wl,--end-group -L ./linkerscripts  -Wl,--gc-sections -mcpu=cortex-m3 -Tsam3x8e_flash.ld $(OBJECTS)
+	$(ARMGNU)-gcc -o $@ -mthumb -Wl,--start-group -lm  -Wl,--end-group -L ./linkerscripts  -Wl,--gc-sections -mcpu=cortex-m3 -Tsam3x8e_flash.ld $(OBJECTS)
 	@echo Finished building target: $@
 
 

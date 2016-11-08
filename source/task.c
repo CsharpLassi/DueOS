@@ -6,7 +6,6 @@
 #include "taskstate.h"
 #include "console.h"
 #include "pmm.h"
-#include "irqhandler.h"
 #include "syscalls.h"
 
 
@@ -27,8 +26,6 @@ void inittask(void)
 
 void registertask(void* entrypoint)
 {
-    aquireirq();
-
     taskstate* task = (taskstate*)pmm_malloc(sizeof(taskstate));
     uint8_t* stack = pmm_malloc(256);
 
@@ -45,8 +42,6 @@ void registertask(void* entrypoint)
       lasttask = lasttask->nexttask;
 
    lasttask->nexttask = task;
-
-   releaseirq();
 }
 
 void exittask(void)
@@ -56,7 +51,6 @@ void exittask(void)
 
 irqstate* closecurrenttask(void)
 {
-  aquireirq();
 
   if (currenttask == firsttask)
     return;
@@ -76,7 +70,6 @@ irqstate* closecurrenttask(void)
 
   currenttask = lasttask->nexttask;
 
-  releaseirq();
 
   return currenttask->state;
 }

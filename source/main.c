@@ -1,6 +1,5 @@
 #include <stdint.h>
 
-#include "irqhandler.h"
 #include "sam3x8e.h"
 #include "console.h"
 #include "uart.h"
@@ -10,15 +9,21 @@
 #include "debug.h"
 #include "string.h"
 
+
 void testtask1() {
+	uprintf("TestTask 1 Start");
+	volatile uint8_t* ic = malloc(16);
 	while(1)
 	{
+		uprintf("TestTask 1");
+		(*ic) = 1;
 	}
 }
 
 int main(void)
 {
 	SystemInit();
+
 
 	//Uart aktivieren
 	configure_uart();
@@ -33,12 +38,13 @@ int main(void)
 	WDT->WDT_MR |=WDT_MR_WDDIS;
 
 
+
 	SysTick_Config(0xFFFFFF);
 
 	registertask(&testtask1);
 
 	//Erlaube Int.
-	releaseirq();
+	__enable_irq();
 
 	char* ic = (char*)pmm_malloc(64);
 	//Kernel Thread

@@ -31,6 +31,10 @@ void printmalloc(void)
   }
 }
 
+void printirq(void)
+{
+}
+
 void debugloop(void)
 {
   uprintf("Debugmodus aktiviert\n");
@@ -41,6 +45,7 @@ void debugloop(void)
   {
     if(strcmp(str,"gettasks")) printtasks();
     else if(strcmp(str,"getmalloc")) printmalloc();
+    else if(strcmp(str,"getirq")) printirq();
   }
 
   uprintf("Debugmodus deaktiviert\n");
