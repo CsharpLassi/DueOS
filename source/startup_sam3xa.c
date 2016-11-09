@@ -44,7 +44,7 @@ extern uint32_t _estack;
 int main(void);
 /** \endcond */
 
-void __libc_init_array(void);
+//void __libc_init_array(void);
 
 /* Default empty handler */
 
@@ -198,11 +198,8 @@ void Reset_Handler(void)
         SCB->VTOR = ((uint32_t) pSrc & SCB_VTOR_TBLOFF_Msk);
 
         /* Initialize the C library */
-        __libc_init_array();
+        //__libc_init_array();
 
         /* Branch to main function */
         main();
-
-        /* Infinite loop */
-        while (1);
 }

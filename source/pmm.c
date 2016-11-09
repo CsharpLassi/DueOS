@@ -60,3 +60,17 @@ memorysegment* pmm_getfirstmemorysegment()
 {
   return firstsegment;
 }
+
+void pmm_clean(uint32_t handle)
+{
+  memorysegment* lastsegment = firstsegment;
+  while((uint8_t*)lastsegment->nextsegment != 0)
+  {
+    if (lastsegment->taskhandle == handle)
+    {
+      lastsegment->nextsegment = lastsegment->nextsegment->nextsegment;
+    }
+
+    lastsegment = lastsegment->nextsegment;
+  }
+}

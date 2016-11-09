@@ -57,13 +57,11 @@ irqstate* HandleSysCall(irqstate* state)
 
   switch (value)
   {
-    handle_fault_irq(16,state);
-
     case 0:
       state =  closecurrenttask();
       break;
     case 1:
-      (uint32_t)pmm_malloc(state->r0);
+      state->r0 = (uint32_t)pmm_malloc(state->r0);
       break;
     default:
       break;

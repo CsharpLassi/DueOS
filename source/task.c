@@ -64,6 +64,7 @@ irqstate* closecurrenttask(void)
   else
     lasttask->nexttask = firsttask;
 
+  pmm_clean((uint32_t)currenttask);
   pmm_free((uint8_t*)currenttask->stack);
   pmm_free((uint8_t*)currenttask);
 

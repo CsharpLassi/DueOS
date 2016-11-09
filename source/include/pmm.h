@@ -11,6 +11,8 @@
 uint8_t* pmm_malloc(uint32_t length);
 void pmm_free(uint8_t* addr);
 
+void pmm_clean(uint32_t handle);
+
 memorysegment* pmm_getfirstmemorysegment();
 
 #endif

@@ -1,5 +1,5 @@
 .syntax unified
-.thumb
+.thumb_func
 
 .extern handle_irq
 .global asm_handle_irq
@@ -13,13 +13,13 @@ asm_handle_irq:
 	push {r0}
 
 	push {r4-r11,lr}
-	mov r3,lr
+	mov r4,lr
 	mov r0,sp
 
 	bl handle_irq
 
 	mov sp, r0
-	mov lr, r3
+	mov lr, r4
 
 	pop {r4-r11}
 	pop {r1} // altes lr

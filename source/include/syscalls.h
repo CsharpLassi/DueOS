@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-extern void close(void);
+void  close(void);
 
-extern uint8_t* malloc( uint32_t length);
+uint8_t* malloc( uint32_t length);
 
 #endif

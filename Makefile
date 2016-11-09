@@ -47,7 +47,7 @@ $(TARGET) : $(BUILD)output.elf
 # Rule to make the elf file.
 $(BUILD)output.elf : $(OBJECTS)
 	@echo Building target: $@
-	$(ARMGNU)-gcc -o $@ -mthumb -Wl,--start-group -lm  -Wl,--end-group -L ./linkerscripts  -Wl,--gc-sections -mcpu=cortex-m3 -Tsam3x8e_flash.ld $(OBJECTS)
+	$(ARMGNU)-gcc -o $@ -mthumb -Wl,--start-group -lm  -Wl,--end-group -L ./linkerscripts  -Wl,--gc-sections -nostdlib -nostartfiles -mcpu=cortex-m3 -Tsam3x8e_flash.ld $(OBJECTS)
 	@echo Finished building target: $@
 
 
@@ -56,7 +56,7 @@ $(BUILD)output.elf : $(OBJECTS)
 # Rule to make the object files.
 $(BUILD)%.o: $(SOURCE)%.c $(BUILD)
 	@echo Building file: $<
-	$(ARMGNU)-gcc$(QUOTE)  -x c -mthumb -D__SAM3X8E__ -DDEBUG  -I "./stdinclude/atmel" -Werror -I "./source/include" -O3 -ffunction-sections -mlong-calls -g3 -Wall -mcpu=cortex-m3 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
+	$(ARMGNU)-gcc$(QUOTE)  -x c -mthumb -D__SAM3X8E__ -DDEBUG -Werror -nostdlib -nostartfiles -I "./stdinclude/atmel"  -I "./source/include" -O3 -ffunction-sections -ffreestanding -mlong-calls -g3 -Wall -mcpu=cortex-m3 -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"   -o "$@" "$<"
 	@echo Finished building: $<
 
 $(BUILD)%.o: $(SOURCE)%.S $(BUILD)
