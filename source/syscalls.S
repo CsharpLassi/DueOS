@@ -4,20 +4,20 @@
 
 
 
-.global close
-.global malloc
+.global CloseTask
+.global Malloc
 
-.type close, %function
-.type malloc, %function
+.type CloseTask, %function
+.type Malloc, %function
 
-.func close
-close:
+.func CloseTask
+CloseTask:
   svc 0x00
   bx lr
 .endfunc
 
-.func malloc
-malloc:
+.func Malloc
+Malloc:
   svc 0x01
   bx lr
 .endfunc

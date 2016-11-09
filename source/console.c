@@ -2,7 +2,7 @@
 #include "sam3x8e.h"
 
 //TODO: Unschön
-int ugetc(char *c)
+int GetChar(char *c)
 {
 
 	// Check if the receiver is ready
@@ -14,11 +14,11 @@ int ugetc(char *c)
 	return 0;
 }
 
-int ureadln(char* str,uint8_t size)
+int ReadLine(char* str,uint8_t size)
 {
 
 	uint8_t i = 0;
-	while (i < size -1 && !ugetc(&str[i]) && str[i] != '\n')
+	while (i < size -1 && GetChar(&str[i]) && str[i] != '\n')
 		i++;
 
 	str[i] = 0;
@@ -27,7 +27,7 @@ int ureadln(char* str,uint8_t size)
 
 }
 
-int uputc(const char c)
+int PutChar(const char c)
 {
 	// Check if the transmitter is ready
 	while(!(UART->UART_SR & UART_SR_TXRDY));
@@ -37,17 +37,17 @@ int uputc(const char c)
 	return 0;
 }
 
-int uputs(const char* str)
+int PutString(const char* str)
 {
 
 	while (*str) {
-		uputc(*str++);
+		PutChar(*str++);
 	}
 
 	return 0;
 }
 
-int uputn(uint32_t value,uint8_t base)
+int PutInteger(uint32_t value,uint8_t base)
 {
 	char buf[65];
 	char* p;
@@ -65,12 +65,12 @@ int uputn(uint32_t value,uint8_t base)
 		value /= base;
 	} while (value);
 
-	uputs(p);
+	PutString(p);
 
 	return 0;
 }
 
-int uprintf(const char* str,...)
+int PrintString(const char* str,...)
 {
 	va_list ap;
 	const char*  s;
@@ -93,34 +93,34 @@ int uprintf(const char* str,...)
 			{
 				case 'b':
 					n = va_arg(ap,uint32_t);
-					uputn(n,2);
+					PutInteger(n,2);
 					break;
 				case 's':
 					s = va_arg(ap,char*);
-					uputs(s);
+					PutString(s);
 					break;
 				case 'd':
 				case 'u':
 					n = va_arg(ap,uint32_t);
-					uputn(n,10);
+					PutInteger(n,10);
 					break;
 				case 'x':
 				case 'p':
 					n = va_arg(ap,uint32_t);
-					uputn(n,16);
+					PutInteger(n,16);
 					break;
 				case '%':
-					uputc('%');
+					PutChar('%');
 					break;
 				default:
-					uputc('%');
-					uputc(*str);
+					PutChar('%');
+					PutChar(*str);
 					break;
 			}
 		}
 		else
 		{
-			uputc(*str);
+			PutChar(*str);
 		}
 
 		str++;

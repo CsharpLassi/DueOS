@@ -9,84 +9,84 @@
 #include "syscalls.h"
 
 
-taskstate* firsttask;
-taskstate* currenttask;
+TaskState* _firsttask;
+TaskState* _currenttask;
 
-taskstate*  getfirsttask()
+TaskState*  GetFirstTask()
 {
-  return firsttask;
+  return _firsttask;
 }
 
-void inittask(void)
+void InitTask(void)
 {
-  firsttask = (taskstate*)pmm_malloc(sizeof(taskstate));
-  firsttask->nexttask = 0;
-  currenttask = firsttask;
+  _firsttask = (TaskState*)PmmMalloc(sizeof(TaskState));
+  _firsttask->nexttask = 0;
+  _currenttask = _firsttask;
 }
 
-void registertask(void* entrypoint)
+void RegisterTask(void* entrypoint)
 {
-    taskstate* task = (taskstate*)pmm_malloc(sizeof(taskstate));
-    uint8_t* stack = pmm_malloc(256);
+    TaskState* task = (TaskState*)PmmMalloc(sizeof(TaskState));
+    uint8_t* stack = PmmMalloc(256);
 
-    task->state =(irqstate*)(stack+256-sizeof(irqstate));
+    task->state =(IrqState*)(stack+256-sizeof(IrqState));
     task->state->psr = 0x41000000;
     task->state->pc = (uint32_t)entrypoint-1;
     task->state->sp = (uint32_t)(stack+256);
-    task->state->lr = (uint32_t)&exittask;
+    task->state->lr = (uint32_t)&ExitTask;
     task->nexttask =  (uint32_t)0;
     task->stack = stack;
 
-    taskstate* lasttask = firsttask;
+    TaskState* lasttask = _firsttask;
     while (lasttask->nexttask != 0)
       lasttask = lasttask->nexttask;
 
    lasttask->nexttask = task;
 }
 
-void exittask(void)
+void ExitTask(void)
 {
-  close();
+  CloseTask();
 }
 
-irqstate* closecurrenttask(void)
+IrqState* CloseCurrentTask(void)
 {
 
-  if (currenttask == firsttask)
-    return currenttask->state;
+  if (_currenttask == _firsttask)
+    return _currenttask->state;
 
-  taskstate* lasttask = firsttask;
-  while (lasttask->nexttask != currenttask)
+  TaskState* lasttask = _firsttask;
+  while (lasttask->nexttask != _currenttask)
     lasttask = lasttask->nexttask;
 
-  if(currenttask->nexttask != 0)
-    lasttask->nexttask = currenttask->nexttask;
+  if(_currenttask->nexttask != 0)
+    lasttask->nexttask = _currenttask->nexttask;
   else
-    lasttask->nexttask = firsttask;
+    lasttask->nexttask = _firsttask;
 
-  pmm_clean((uint32_t)currenttask);
-  pmm_free((uint8_t*)currenttask->stack);
-  pmm_free((uint8_t*)currenttask);
+  PmmClean((uint32_t)_currenttask);
+  PmmFree((uint8_t*)_currenttask->stack);
+  PmmFree((uint8_t*)_currenttask);
 
-  currenttask = lasttask->nexttask;
+  _currenttask = lasttask->nexttask;
 
 
-  return currenttask->state;
+  return _currenttask->state;
 }
 
-irqstate* nexttask(irqstate* oldstate)
+IrqState* NextTask(IrqState* oldstate)
 {
-  currenttask->state = oldstate;
+  _currenttask->state = oldstate;
 
-  if (currenttask->nexttask != 0)
-    currenttask = currenttask->nexttask;
+  if (_currenttask->nexttask != 0)
+    _currenttask = _currenttask->nexttask;
   else
-    currenttask = firsttask;
+    _currenttask = _firsttask;
 
-  return currenttask->state;
+  return _currenttask->state;
 }
 
-uint32_t getcurrenttaskhandle()
+uint32_t GetCurrentTaskHandle()
 {
-  return (uint32_t)currenttask;
+  return (uint32_t)_currenttask;
 }

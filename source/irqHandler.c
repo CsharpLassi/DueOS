@@ -4,53 +4,53 @@
 #include "task.h"
 #include "pmm.h"
 
-void handle_fault_irq(uint32_t isrnumber,irqstate* state)
+void HandleFaultIrq(uint32_t isrnumber,IrqState* state)
 {
   //CFSR
   switch (isrnumber) {
       case 3:
-        uprintf("Hard-Fault gefunden\n");
+        PrintString("Hard-Fault gefunden\n");
         break;
       case 4:
-          uprintf("Memory-Fault gefunden\n");
+          PrintString("Memory-Fault gefunden\n");
           break;
       case 5:
-          uprintf("Bus-Fault gefunden\n");
+          PrintString("Bus-Fault gefunden\n");
           break;
       case 6:
-        uprintf("Usage-Fault gefunden\n");
-        uprintf("Register:%x\n",(SCB->CFSR & SCB_CFSR_USGFAULTSR_Msk) >> SCB_CFSR_USGFAULTSR_Pos);
+        PrintString("Usage-Fault gefunden\n");
+        PrintString("Register:%x\n",(SCB->CFSR & SCB_CFSR_USGFAULTSR_Msk) >> SCB_CFSR_USGFAULTSR_Pos);
         break;
       default:
-        uprintf("Interupt gefunden\n");
-        uprintf("Number: [%d] \n",isrnumber);
+        PrintString("Interupt gefunden\n");
+        PrintString("Number: [%d] \n",isrnumber);
         break;
 
   }
-  uprintf("Pointer: [%x] \n",state);
-  uprintf("R0: [%x] \n",state->r0);
-  uprintf("R1: [%x] \n",state->r1);
-  uprintf("R2: [%x] \n",state->r2);
-  uprintf("R3: [%x] \n",state->r3);
-  uprintf("R4: [%x] \n",state->r4);
-  uprintf("R5: [%x] \n",state->r5);
-  uprintf("R6: [%x] \n",state->r6);
-  uprintf("R7: [%x] \n",state->r7);
-  uprintf("R8: [%x] \n",state->r8);
-  uprintf("R9: [%x] \n",state->r9);
-  uprintf("R10: [%x] \n",state->r10);
-  uprintf("R11: [%x] \n",state->r11);
-  uprintf("R12: [%x] \n",state->r12);
-  uprintf("LR: [%x] \n",state->lr);
-  uprintf("PC: [%x] \n",state->pc);
-  uprintf("PSR: [%x] \n",state->psr);
-  uprintf("SP: [%x] \n",state->sp);
-  uprintf("Response: [%x] \n",state->response);
+  PrintString("Pointer: [%x] \n",state);
+  PrintString("R0: [%x] \n",state->r0);
+  PrintString("R1: [%x] \n",state->r1);
+  PrintString("R2: [%x] \n",state->r2);
+  PrintString("R3: [%x] \n",state->r3);
+  PrintString("R4: [%x] \n",state->r4);
+  PrintString("R5: [%x] \n",state->r5);
+  PrintString("R6: [%x] \n",state->r6);
+  PrintString("R7: [%x] \n",state->r7);
+  PrintString("R8: [%x] \n",state->r8);
+  PrintString("R9: [%x] \n",state->r9);
+  PrintString("R10: [%x] \n",state->r10);
+  PrintString("R11: [%x] \n",state->r11);
+  PrintString("R12: [%x] \n",state->r12);
+  PrintString("LR: [%x] \n",state->lr);
+  PrintString("PC: [%x] \n",state->pc);
+  PrintString("PSR: [%x] \n",state->psr);
+  PrintString("SP: [%x] \n",state->sp);
+  PrintString("Response: [%x] \n",state->response);
 
   while(1);
 }
 
-irqstate* HandleSysCall(irqstate* state)
+IrqState* HandleSysCall(IrqState* state)
 {
   uint32_t* addr = (uint32_t*)(state->pc -2);
   uint8_t value = (*addr) & 0xFF;
@@ -58,10 +58,10 @@ irqstate* HandleSysCall(irqstate* state)
   switch (value)
   {
     case 0:
-      state =  closecurrenttask();
+      state =  CloseCurrentTask();
       break;
     case 1:
-      state->r0 = (uint32_t)pmm_malloc(state->r0);
+      state->r0 = (uint32_t)PmmMalloc(state->r0);
       break;
     default:
       break;
@@ -70,7 +70,7 @@ irqstate* HandleSysCall(irqstate* state)
   return state;
 }
 
-irqstate* handle_irq(irqstate* state)
+IrqState* HandleIrq(IrqState* state)
 {
   IPSR_Type type;
   type.w = __get_IPSR();
@@ -85,10 +85,10 @@ irqstate* handle_irq(irqstate* state)
     case 4:
     case 5:
     case 6:
-      handle_fault_irq(type.b.ISR,state);
+      HandleFaultIrq(type.b.ISR,state);
       break;
     case 15:
-      state = nexttask(state);
+      state = NextTask(state);
       break;
     case 16:
       state = HandleSysCall(state);

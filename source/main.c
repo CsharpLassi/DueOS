@@ -10,12 +10,12 @@
 #include "string.h"
 
 
-void testtask1() {
-	uprintf("TestTask 1 Start");
-	volatile uint8_t* ic = malloc(16);
+void TestTask1() {
+	PrintString("TestTask 1 Start");
+	volatile uint8_t* ic = Malloc(16);
 	while(1)
 	{
-		uprintf("TestTask 1");
+		PrintString("TestTask 1");
 		(*ic) = 1;
 	}
 }
@@ -26,10 +26,10 @@ int main(void)
 
 
 	//Uart aktivieren
-	configure_uart();
+	ConfigureUart();
 
 	//TaskInit
-	inittask();
+	InitTask();
 
 	//Fehler aktivieren
 	SCB->SHCSR |= SCB_SHCSR_USGFAULTENA_Msk | SCB_SHCSR_BUSFAULTENA_Msk | SCB_SHCSR_MEMFAULTENA_Msk;
@@ -41,19 +41,19 @@ int main(void)
 
 	SysTick_Config(0xFFFF);
 
-	registertask(&testtask1);
+	RegisterTask(&TestTask1);
 	//registertask(&testtask2);
 
 	//Erlaube Int.
 	__enable_irq();
 
-	char* ic = (char*)pmm_malloc(64);
+	char* ic = (char*)PmmMalloc(64);
 	//Kernel Thread
 	while (1)
 	{
-		ureadln(ic,64);
-		if(strcmp(ic,"debug"))
-			debugloop();
+		ReadLine(ic,64);
+		if(StringCompare(ic,"debug"))
+			DebugLoop();
 
 	}
 }

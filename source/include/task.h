@@ -5,15 +5,15 @@
 #include "irqstate.h"
 #include "taskstate.h"
 
-taskstate* getfirsttask();
+TaskState* GetFirstTask();
 
-void inittask(void);
-void registertask(void* entrypoint);
-void exittask(void);
+void InitTask(void);
+void RegisterTask(void* entrypoint);
+void ExitTask(void);
 
-uint32_t getcurrenttaskhandle();
+uint32_t GetCurrentTaskHandle();
 
-irqstate* closecurrenttask(void);
-irqstate* nexttask(irqstate* oldstate);
+IrqState* CloseCurrentTask(void);
+IrqState* NextTask(IrqState* oldstate);
 
 #endif

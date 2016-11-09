@@ -3,13 +3,13 @@
 
 #include <stdint.h>
 
-struct memorysegment
+struct MemorySegment
 {
   uint32_t length;
   uint32_t taskhandle;
-  struct memorysegment* nextsegment;
+  struct MemorySegment* nextsegment;
 }__attribute__((packed));
-typedef struct memorysegment memorysegment;
+typedef struct MemorySegment MemorySegment;
 
 
 #endif

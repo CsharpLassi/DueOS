@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-void  close(void);
+void  CloseTask(void);
 
-uint8_t* malloc( uint32_t length);
+uint8_t* Malloc( uint32_t length);
 
 #endif

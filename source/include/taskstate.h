@@ -4,12 +4,12 @@
 #include <stdint.h>
 #include "irqstate.h"
 
-struct taskstate
+struct TaskState
 {
-  irqstate* state;
+  IrqState* state;
   uint8_t* stack;
-  struct taskstate * nexttask;
+  struct TaskState * nexttask;
 } __attribute__((packed));
-typedef struct taskstate taskstate;
+typedef struct TaskState TaskState;
 
 #endif

@@ -3,7 +3,7 @@
 
 #include<stdint.h>
 
-struct irqstate
+struct IrqState
 {
   uint32_t r4;
   uint32_t r5;
@@ -24,6 +24,6 @@ struct irqstate
   uint32_t pc;
   uint32_t psr;
 } __attribute__((packed));
-typedef struct irqstate irqstate;
+typedef struct IrqState IrqState;
 
 #endif //__IRQSTATE_H__

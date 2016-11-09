@@ -5,39 +5,39 @@
 #include "console.h"
 #include "task.h"
 
-memorysegment* firstsegment = 0;
+MemorySegment* _firstsegment = 0;
 
-uint8_t* pmm_malloc(uint32_t length)
+uint8_t* PmmMalloc(uint32_t length)
 {
   uint8_t* resultsegment = 0;
 
   length += (4 -length %4);
 
-  if (firstsegment == 0)
+  if (_firstsegment == 0)
   {
-    firstsegment = (memorysegment*)PAGESTART;
-    firstsegment->length = length;
-    firstsegment->nextsegment = 0;
+    _firstsegment = (MemorySegment*)PAGESTART;
+    _firstsegment->length = length;
+    _firstsegment->nextsegment = 0;
 
-    firstsegment->taskhandle = getcurrenttaskhandle();
+    _firstsegment->taskhandle = GetCurrentTaskHandle();
 
-    resultsegment = (uint8_t*)firstsegment + sizeof(memorysegment);
+    resultsegment = (uint8_t*)_firstsegment + sizeof(MemorySegment);
   }
   else
   {
-    memorysegment* lastsegment = firstsegment;
-    while (lastsegment->nextsegment != 0 && (uint32_t)(lastsegment->nextsegment) - (uint32_t)lastsegment - lastsegment->length - sizeof(memorysegment) < length + sizeof(memorysegment) )
+    MemorySegment* lastsegment = _firstsegment;
+    while (lastsegment->nextsegment != 0 && (uint32_t)(lastsegment->nextsegment) - (uint32_t)lastsegment - lastsegment->length - sizeof(MemorySegment) < length + sizeof(MemorySegment) )
     {
       lastsegment = lastsegment->nextsegment;
     }
-    memorysegment* newsegment =  (memorysegment*)((uint8_t*)(lastsegment +1) + lastsegment->length);
+    MemorySegment* newsegment =  (MemorySegment*)((uint8_t*)(lastsegment +1) + lastsegment->length);
     newsegment->length = length;
     newsegment->nextsegment = lastsegment->nextsegment;
-    newsegment->taskhandle = getcurrenttaskhandle();
+    newsegment->taskhandle = GetCurrentTaskHandle();
 
     lastsegment->nextsegment = newsegment;
 
-    resultsegment = (uint8_t*)newsegment + sizeof(memorysegment);
+    resultsegment = (uint8_t*)newsegment + sizeof(MemorySegment);
   }
 
 
@@ -45,10 +45,10 @@ uint8_t* pmm_malloc(uint32_t length)
   return resultsegment;
 }
 
-void pmm_free(uint8_t* addr )
+void PmmFree(uint8_t* addr )
 {
-  uint8_t* segment = (addr - sizeof(memorysegment));
-  memorysegment* lastsegment = firstsegment;
+  uint8_t* segment = (addr - sizeof(MemorySegment));
+  MemorySegment* lastsegment = _firstsegment;
   while((uint8_t*)lastsegment->nextsegment != segment)
     lastsegment = lastsegment->nextsegment;
 
@@ -56,14 +56,14 @@ void pmm_free(uint8_t* addr )
 
 }
 
-memorysegment* pmm_getfirstmemorysegment()
+MemorySegment* PmmGetFirstMemorySegment()
 {
-  return firstsegment;
+  return _firstsegment;
 }
 
-void pmm_clean(uint32_t handle)
+void PmmClean(uint32_t handle)
 {
-  memorysegment* lastsegment = firstsegment;
+  MemorySegment* lastsegment = _firstsegment;
   while((uint8_t*)lastsegment->nextsegment != 0)
   {
     if (lastsegment->taskhandle == handle)

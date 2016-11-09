@@ -4,11 +4,11 @@
 #include <stdarg.h>
 #include <stdint.h>
 
-int ugetc(char* c);
-int uputc(const char c );
-int uputs(const char* str);
-int uputn(uint32_t value,uint8_t base);
-int uprintf(const char* str, ...);
-int ureadln(char* str,uint8_t size);
+int GetChar(char* c);
+int PutChar(const char c );
+int PutString(const char* str);
+int PutInteger(uint32_t value,uint8_t base);
+int PrintString(const char* str, ...);
+int ReadLine(char* str,uint8_t size);
 
 #endif

@@ -1,6 +1,6 @@
 #include "string.h"
 
-int strcmp(char* str1,char* str2)
+int StringCompare(char* str1,char* str2)
 {
   //TODO
   while(*str1 != '\0' && str2 != '\0')

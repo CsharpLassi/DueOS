@@ -4,50 +4,50 @@
 #include "string.h"
 #include "task.h"
 
-void printtasks(void)
+void PrintTasks(void)
 {
-  taskstate* ft = getfirsttask();
+  TaskState* ft = GetFirstTask();
   while (ft != 0)
   {
-    uprintf("Task %x\n",ft);
-    uprintf("-Addr %x\n",ft);
-    uprintf("-State %x\n",ft->state);
-    uprintf("-Stack %x\n",ft->stack);
+    PrintString("Task %x\n",ft);
+    PrintString("-Addr %x\n",ft);
+    PrintString("-State %x\n",ft->state);
+    PrintString("-Stack %x\n",ft->stack);
 
     ft = ft->nexttask;
   }
 }
 
-void printmalloc(void)
+void PrintMalloc(void)
 {
-  memorysegment* ms = pmm_getfirstmemorysegment();
+  MemorySegment* ms = PmmGetFirstMemorySegment();
   while (ms != 0)
   {
-    uprintf("Segment %x\n",ms);
-    uprintf("-Taskhandle %x\n",ms->taskhandle);
-    uprintf("-Length %x\n",ms->length);
+    PrintString("Segment %x\n",ms);
+    PrintString("-Taskhandle %x\n",ms->taskhandle);
+    PrintString("-Length %x\n",ms->length);
 
     ms = ms->nextsegment;
   }
 }
 
-void printirq(void)
+void PrintIrq(void)
 {
 }
 
-void debugloop(void)
+void DebugLoop(void)
 {
-  uprintf("Debugmodus aktiviert\n");
+  PrintString("Debugmodus aktiviert\n");
 
-  char* str = (char*)pmm_malloc(64);
+  char* str = (char*)PmmMalloc(64);
 
-  while(!ureadln(str,64) && !strcmp(str,"end") )
+  while(!ReadLine(str,64) && !StringCompare(str,"end") )
   {
-    if(strcmp(str,"gettasks")) printtasks();
-    else if(strcmp(str,"getmalloc")) printmalloc();
-    else if(strcmp(str,"getirq")) printirq();
+    if(StringCompare(str,"gettasks")) PrintTasks();
+    else if(StringCompare(str,"getmalloc")) PrintMalloc();
+    else if(StringCompare(str,"getirq")) PrintIrq();
   }
 
-  uprintf("Debugmodus deaktiviert\n");
-  pmm_free((uint8_t*)str);
+  PrintString("Debugmodus deaktiviert\n");
+  PmmFree((uint8_t*)str);
 }

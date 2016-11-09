@@ -1,13 +1,12 @@
 .syntax unified
 .thumb_func
 
-.extern handle_irq
-.global asm_handle_irq
-.global asm_returntask
+.extern HandleIrq
+.global ASMHandleIrq
 
 .text
 
-asm_handle_irq:
+ASMHandleIrq:
 	mov r0, sp
 	add r0, #32
 	push {r0}
@@ -16,7 +15,7 @@ asm_handle_irq:
 	mov r4,lr
 	mov r0,sp
 
-	bl handle_irq
+	bl HandleIrq
 
 	mov sp, r0
 	mov lr, r4

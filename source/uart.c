@@ -1,7 +1,7 @@
 #include "sam3x8e.h"
 #include "uart.h"
 
-void configure_uart(void)
+void ConfigureUart(void)
 {
    //uint32_t ul_sr;
 
